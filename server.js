@@ -3,6 +3,9 @@ const app                     = express();
 const dotenv                  = require('dotenv');
 const mongoose                = require("mongoose");
 const cors                    = require('cors');
+const config                  = require("config");
+const passport 	              = require('passport');
+
 
 const shippersRoute              = require("./routes/shippers.route.js");
 const loginRoute           = require("./routes/login.route.js");
@@ -12,6 +15,12 @@ const registerRoute           = require("./routes/register.route.js");
 dotenv.config();
 console.log(process.env.DB_HOST_DEV)
 
+// use config module to get the privatekey, if no private key set, end the application
+if (!config.get("jwtSecret")) {
+  console.error("FATAL ERROR: myprivatekey is not defined.");
+  process.exit(1);
+}
+
 mongoose
   // For DeprecationWarning:  collection.ensureIndex is deprecated.  Use createIndexes instead.
   .set('useCreateIndex', true)
@@ -20,6 +29,11 @@ mongoose
   .then(() => console.log("Connected to MongoDB...\n"))
   .catch(err =>
     console.error(err))
+
+// // Use the passport package in our application
+app.use(passport.initialize());
+var passportMiddleware = require('./middleware/passport');
+passport.use(passportMiddleware);
 
 app.use(cors());
 app.use(express.json());
