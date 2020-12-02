@@ -4,6 +4,7 @@ const dotenv                  = require('dotenv');
 const mongoose                = require("mongoose");
 const cors                    = require('cors');
 
+const shippersRoute              = require("./routes/shippers.route.js");
 const loginRoute           = require("./routes/login.route.js");
 const registerRoute           = require("./routes/register.route.js");
 
@@ -23,6 +24,7 @@ mongoose
 app.use(cors());
 app.use(express.json());
 
+app.use("/api/shipper", shippersRoute);
 app.use("/api/shipper/login", loginRoute);
 app.use("/api/shipper/register", registerRoute);
 
